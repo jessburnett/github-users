@@ -2,20 +2,28 @@ import React, {
   Component
 } from 'react';
 import './App.css';
+import Navbar from './components/layout/Navbar'
+import Users from './components/user/Users'
+import Search from './components/user/Search'
+import axios from 'axios'
 import PropTypes from 'prop-types'
-import Navbar from './components/layout/Navbar';
-import Users from './components/user/Users';
+
 
 class App extends Component {
-  static defaultProps = {
-    title: 'Github Finder',
-    icon: 'fab fa-github'
-  };
+  state = {
+    users: [],
+    loading: false
+  }
 
-  static propTypes = {
-    title: PropTypes.string.isRequired,
-    icon: PropTypes.string.isRequired
-  };
+  static propTpyes = {
+    searchUsers: PropTypes.func.isRequired
+  }
+
+  searchUsers = async text => {
+    this.setState({loading: true});
+    const res = await axios.get(`https://api.github.com/search/users?q=${text}&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`); 
+    this.setState({users: res.data.items, loading: false});
+  }
 
   render() {
     return ( 
@@ -23,7 +31,8 @@ class App extends Component {
       <Navbar className="navbar bg-primary">
       </Navbar>
       <div className="container">
-        <Users/>
+        <Search searchUsers={this.searchUsers}/>
+        <Users loading={this.state.loading} users={this.state.users}/>
       </div>
     </div>
     );
