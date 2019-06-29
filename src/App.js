@@ -1,24 +1,20 @@
 import React, {
-  Component
+  Component, Fragment
 } from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import './App.css';
 import Navbar from './components/layout/Navbar'
 import Users from './components/user/Users'
 import Search from './components/user/Search'
+import About from './components/pages/About'
+import Alert from './components/layout/Alert'
 import axios from 'axios'
-import PropTypes from 'prop-types'
-
 
 class App extends Component {
   state = {
     users: [],
-    loading: false
-  }
-
-  static propTpyes = {
-    searchUsers: PropTypes.func.isRequired,
-    clearUsers: PropTypes.func.isRequired,
-    showClear: PropTypes.bool.isRequired
+    loading: false,
+    alert: null
   }
 
   searchUsers = async text => {
@@ -29,18 +25,36 @@ class App extends Component {
 
   clearUsers = () => this.setState({ users: [], loading: false });
 
+  showAlert = (msg, type) => {
+    this.setState({alert: {msg, type}});
+    setTimeout(()=>{this.setState({ alert: null })}, 3000);
+  }
+
 
   render() {
     const { loading, users } = this.state;
     return (
-    <div className="App">
+      <Router>
+        <div className="App">
       <Navbar className="navbar bg-primary">
       </Navbar>
       <div className="container">
-        <Search searchUsers={this.searchUsers} clearUsers={this.clearUsers} showClear={this.state.users.length > 0 ? true : false }/> 
-        <Users loading={loading} users={users}/>
+        <Alert alert={this.state.alert}/>
+        <Switch>
+          <Route exact path="/" render={ props => (
+            <Fragment>
+              <Search searchUsers={this.searchUsers} 
+                clearUsers={this.clearUsers} 
+                showClear={users.length > 0 ? true : false }
+                showAlert={this.showAlert}/> 
+              <Users loading={loading} users={users}/>
+            </Fragment>
+          )}/>
+          <Route exact path='/about' component={About}/>
+        </Switch>
       </div>
     </div>
+    </Router>
     );
   }
 }
