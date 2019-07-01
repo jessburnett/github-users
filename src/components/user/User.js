@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 const User = ({user, loading, getUser, match}) => {
   useEffect(()=>{
     getUser(match.params.login);
+    // eslint-disable-next-line
   }, []);
 
   const {
@@ -18,7 +19,6 @@ const User = ({user, loading, getUser, match}) => {
     location,
     bio,
     blog,
-    login,
     html_url,
     followers,
     following,
@@ -38,7 +38,7 @@ const User = ({user, loading, getUser, match}) => {
       }
       <div className="card grid-2"> 
         <div className='all-center'>
-          <img src={avatar_url} alt="avatar image" className="round-img" style={{width: '150px'}}/>
+          <img src={avatar_url} alt="avatar" className="round-img" style={{width: '150px'}}/>
           <h2>{name}</h2>  
           <p>{location}</p>
           <p>{blog && (<Fragment>
@@ -57,8 +57,7 @@ const User = ({user, loading, getUser, match}) => {
             <h3>Bio</h3>
             <p>{bio}</p>
           </Fragment>)}
-          <a href={html_url} className='btn btn-dark my-1'>Github Profile</a>       
-          
+          <a href={html_url} className='btn btn-dark my-1'>Github Profile</a>             
             {company && (<Fragment>
               <div className='card'>
                 <span className='badge badge-success'>Repos:{' '}{public_repos}</span>
@@ -66,7 +65,6 @@ const User = ({user, loading, getUser, match}) => {
                 <span className='badge badge-dark'>Following:{' '}{following}</span>
               </div>
             </Fragment>)}
-          
         </div>
       </div>
     </Fragment>
